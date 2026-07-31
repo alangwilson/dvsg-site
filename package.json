@@ -12,6 +12,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check:links": "node scripts/check-links.mjs",
+    "check:redirects": "node scripts/check-redirects.mjs",
     "check:security": "npm audit --omit=dev --audit-level=high"
   },
   "dependencies": {
