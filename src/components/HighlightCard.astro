@@ -1,0 +1,25 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  excerpt: string;
+  date: Date;
+  tags?: string[];
+}
+
+const { href, title, excerpt, date, tags = [] } = Astro.props;
+const formattedDate = date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+});
+---
+
+<article class="card">
+  <h3><a href={href}>{title}</a></h3>
+  <p>{excerpt}</p>
+  <div class="card-meta">
+    <span>{formattedDate}</span>
+    {tags.slice(0, 3).map((tag) => <span class="chip">{tag}</span>)}
+  </div>
+</article>

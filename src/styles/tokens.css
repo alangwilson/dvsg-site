@@ -1,0 +1,43 @@
+:root {
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Playfair", Georgia, serif;
+  --font-ui: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-prose: "EB Garamond", Georgia, serif;
+
+  --color-canvas: #aca28f;
+  --color-paper: #ece7cc;
+  --color-ink: #292216;
+  --color-ink-soft: #2d313a;
+  --color-ink-blue: #2d3c57;
+  --color-ink-blue-soft: #384a6a;
+  --color-paper-contrast: #ddd9c7;
+
+  --color-bg: var(--color-canvas);
+  --color-surface: var(--color-paper);
+  --color-text: var(--color-ink);
+  --color-text-muted: #3a3328;
+  --color-border: #cfc7ab;
+  --color-accent: var(--color-ink-blue);
+  --color-accent-strong: #22324d;
+  --color-highlight: #dfd8bc;
+  --color-footer: var(--color-ink-blue);
+  --color-footer-text: var(--color-paper-contrast);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  --shadow-soft: 0 1px 12px rgba(41, 34, 22, 0.1);
+  --shadow-frame: 0 0 16px rgba(41, 34, 22, 0.25);
+  --shadow-image-warm: 0 8px 18px rgba(88, 76, 60, 0.22);
+  --shadow-focus: 0 0 0 3px rgba(45, 60, 87, 0.35);
+}

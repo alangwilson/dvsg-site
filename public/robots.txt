@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /text-texture-test/
+
+Sitemap: https://www.datavizstyleguide.com/sitemap-index.xml

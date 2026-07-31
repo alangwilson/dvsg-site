@@ -1,0 +1,158 @@
+{
+  "redirects": [
+    {
+      "source": "/highlights/elevating-table-design-lessons-from-the-cato-institutes-data-visualization-guide",
+      "destination": "/tips/elevating-table-design-lessons-from-the-cato-institutes-data-visualization-guide/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/best-practices-for-tooltips-in-data-visualizations-from-opattern",
+      "destination": "/tips/best-practices-for-tooltips-in-data-visualizations-from-opattern/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/keep-the-scope-explicit",
+      "destination": "/tips/anatomy-of-a-good-chart-githubs-approach/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/tasos-evolving-data-visualization-guide-bridging-reports-and-social-media",
+      "destination": "/tips/tasos-evolving-data-visualization-guide-bridging-reports-and-social-media/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/be-real-why-real-life-data-and-visualizations-make-the-best-examplesnbsp",
+      "destination": "/tips/be-real-why-real-life-data-and-visualizations-make-the-best-examples/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/label-swatches-with-contrasting-text",
+      "destination": "/tips/label-swatches-with-contrasting-text/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/chart-smarter-with-a-chart-library-1",
+      "destination": "/tips/chart-smarter-with-a-chart-library-2/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/the-rare-exception-of-omitting-interactive-chart-guidance-in-data-visualization-style-guides",
+      "destination": "/tips/the-rare-exception-of-omitting-interactive-chart-guidance-in-data-visualization-style-guides/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/provide-an-on-ramp",
+      "destination": "/tips/provide-an-on-ramp/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/chart-smarter-with-a-chart-library",
+      "destination": "/tips/chart-smarter-with-a-chart-library/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/insights-on-dashboard-design",
+      "destination": "/tips/insights-on-dashboard-design/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/examples-kraft-heinz",
+      "destination": "/tips/why-its-good-to-show-bad-examples/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/33zqo4rvom0d6qc7gpj6zdail3rcpw",
+      "destination": "/tips/consistent-symbol-usage/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/a-clear-approach-to-color-combinations",
+      "destination": "/tips/a-clear-approach-to-color-combinations/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/templates-kraft-heinz",
+      "destination": "/tips/link-templates-for-usability/",
+      "permanent": true
+    },
+    {
+      "source": "/cart",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/checklist",
+      "destination": "/resources/checklist/",
+      "permanent": true
+    },
+    {
+      "source": "/getting-started",
+      "destination": "/resources/getting-started/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights",
+      "destination": "/tips/",
+      "permanent": true
+    },
+    {
+      "source": "/highlights/tag/:slug*",
+      "destination": "/tips/",
+      "permanent": true
+    },
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://challenges.cloudflare.com; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://challenges.cloudflare.com; upgrade-insecure-requests"
+        }
+      ]
+    },
+    {
+      "source": "/_astro/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/images/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}

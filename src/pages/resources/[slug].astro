@@ -1,0 +1,187 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const resources = await getCollection("resources");
+
+  return resources
+    .filter((entry) => entry.data.homeCategory === "other" || entry.data.homeCategory === "videos")
+    .map((entry) => ({
+      params: { slug: entry.slug },
+      props: { entry }
+    }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const resources = (await getCollection("resources"))
+  .filter((candidate) => candidate.data.homeCategory === "other" || candidate.data.homeCategory === "videos")
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+const resourceIndex = resources.findIndex((candidate) => candidate.slug === entry.slug);
+const previousResourceEntry =
+  resources.length === 0
+    ? null
+    : resourceIndex >= 0
+      ? resources[(resourceIndex - 1 + resources.length) % resources.length]
+      : resources[resources.length - 1];
+const nextResourceEntry =
+  resources.length === 0
+    ? null
+    : resourceIndex >= 0
+      ? resources[(resourceIndex + 1) % resources.length]
+      : resources[0];
+const bodyText = typeof entry.body === "string" ? entry.body : "";
+const hasBody = bodyText.trim().length > 0;
+const formatType = (value: string): string => `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
+const resourceImage = entry.data.image ?? "/images/uploads/resources/article-what-are-guidelines.png";
+const toYouTubeEmbedUrl = (value?: string): string | null => {
+  if (!value) return null;
+
+  try {
+    const parsed = new URL(value);
+    const host = parsed.hostname.replace(/^www\./i, "").toLowerCase();
+    let videoId = "";
+
+    if (host === "youtu.be") {
+      videoId = parsed.pathname.split("/").filter(Boolean)[0] ?? "";
+    } else if (host === "youtube.com" || host === "m.youtube.com") {
+      if (parsed.pathname === "/watch") {
+        videoId = parsed.searchParams.get("v") ?? "";
+      } else if (parsed.pathname.startsWith("/embed/") || parsed.pathname.startsWith("/shorts/")) {
+        videoId = parsed.pathname.split("/")[2] ?? "";
+      }
+    }
+
+    if (!/^[A-Za-z0-9_-]{11}$/.test(videoId)) {
+      return null;
+    }
+
+    return `https://www.youtube.com/embed/${videoId}`;
+  } catch {
+    return null;
+  }
+};
+const youtubeEmbedUrl = toYouTubeEmbedUrl(entry.data.youtubeUrl ?? entry.data.url);
+---
+
+<BaseLayout
+  title={`${entry.data.title} | Resource | DataViz Style Guide`}
+  description={entry.data.summary}
+  mainClass="tip-detail-main-shell"
+>
+  <article class="tip-detail-scene">
+    <section class="tip-detail-shell">
+      <div class="tip-detail-paper resource-detail-paper">
+        <header class="tip-detail-head resource-detail-head">
+          <p class="tip-detail-kicker resource-detail-kicker">
+            <span class="tip-badge resource-badge" aria-hidden="true"></span>
+          </p>
+          <h1>{entry.data.title}</h1>
+        </header>
+
+        <div class={`tip-detail-content resource-detail-content${resourceImage ? " resource-detail-content-with-image" : ""}`}>
+          <div class="tip-detail-copy resource-detail-copy">
+            <p class="tip-detail-meta">
+              <span class="tip-detail-meta-mark" aria-hidden="true"></span>
+              <span>
+                {entry.data.source} · {formatType(entry.data.type)}
+              </span>
+            </p>
+            <p class="resource-detail-summary">{entry.data.summary}</p>
+            {youtubeEmbedUrl && (
+              <figure class="tip-detail-video">
+                <div class="tip-detail-video-frame">
+                  <iframe
+                    src={`${youtubeEmbedUrl}?rel=0`}
+                    title={`Video for ${entry.data.title}`}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen
+                    referrerpolicy="strict-origin-when-cross-origin"
+                  ></iframe>
+                </div>
+              </figure>
+            )}
+            {hasBody && (
+              <div class="tip-detail-body prose">
+                <Content />
+              </div>
+            )}
+          </div>
+
+          {resourceImage && (
+            <aside class="tip-detail-figure-column resource-detail-figure-column" aria-label="Resource image">
+              <figure class="tip-detail-figure resource-detail-figure">
+                <img src={resourceImage} width="1200" height="900" alt="" loading="lazy" decoding="async" />
+              </figure>
+            </aside>
+          )}
+
+          <div class="tip-detail-lower resource-detail-lower">
+            <div class="tip-detail-footer-meta resource-detail-footer-meta">
+              <a class="dv-button" href={entry.data.url} target="_blank" rel="noreferrer">
+                Visit original source
+              </a>
+              <nav class="tip-detail-nav-links" aria-label="Resource navigation">
+                {previousResourceEntry && (
+                  <a
+                    class="tip-detail-nav-link tip-detail-nav-link-previous"
+                    href={`/resources/${previousResourceEntry.slug}/`}
+                  >
+                    ‹ previous resource
+                  </a>
+                )}
+                <a class="tip-detail-nav-link tip-detail-nav-link-browse" href="/resources/">
+                  browse all resources
+                </a>
+                {nextResourceEntry && (
+                  <a class="tip-detail-nav-link tip-detail-nav-link-next" href={`/resources/${nextResourceEntry.slug}/`}>
+                    next resource ›
+                  </a>
+                )}
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </article>
+
+  <script>
+    const isNavigationFocusClear = () => {
+      const activeElement = document.activeElement;
+
+      return (
+        !activeElement ||
+        activeElement === document.body ||
+        activeElement === document.documentElement
+      );
+    };
+
+    document.addEventListener("keydown", (event) => {
+      if (event.defaultPrevented || event.repeat) return;
+      if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+      if (!isNavigationFocusClear()) return;
+
+      if (event.key === "ArrowLeft") {
+        const previousLink = document.querySelector(".tip-detail-nav-link-previous");
+
+        if (previousLink instanceof HTMLAnchorElement) {
+          event.preventDefault();
+          window.location.assign(previousLink.href);
+        }
+      }
+
+      if (event.key === "ArrowRight") {
+        const nextLink = document.querySelector(".tip-detail-nav-link-next");
+
+        if (nextLink instanceof HTMLAnchorElement) {
+          event.preventDefault();
+          window.location.assign(nextLink.href);
+        }
+      }
+    });
+  </script>
+</BaseLayout>

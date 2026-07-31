@@ -1,0 +1,176 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const resources = (await getCollection("resources"))
+  .filter((entry) => entry.data.homeCategory === "other" || entry.data.homeCategory === "videos")
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+const highlights = (await getCollection("highlights")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+// First-party guides that opt into the resources table via `listing` metadata.
+const guides = (await getCollection("guides")).filter(
+  (entry) => !entry.data.draft && entry.data.listing
+);
+
+// Normalized rows so curated resources (external source link) and first-party guides
+// (plain-text source) render through the same table/list markup.
+interface ResourceRow {
+  href: string;
+  title: string;
+  source: string;
+  sourceHref: string | null;
+  author: string;
+  type: string;
+}
+
+const rows: ResourceRow[] = [
+  ...resources.map((entry) => ({
+    href: `/resources/${entry.slug}/`,
+    title: entry.data.title,
+    source: entry.data.source,
+    sourceHref: entry.data.url,
+    author: entry.data.byline,
+    type: entry.data.type
+  })),
+  ...guides.map((entry) => ({
+    href: `/resources/${entry.slug}/`,
+    title: entry.data.title,
+    source: entry.data.listing!.source,
+    sourceHref: null,
+    author: entry.data.listing!.author,
+    type: entry.data.listing!.type
+  }))
+].sort((a, b) => a.title.localeCompare(b.title));
+const examples = (await getCollection("resources"))
+  .filter((entry) => entry.data.homeCategory === "examples")
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+const formatType = (value: string): string => `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
+
+const pickRandom = <T,>(items: T[], count: number): T[] => {
+  const pool = [...items];
+
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+
+  return pool.slice(0, Math.min(count, pool.length));
+};
+
+const featuredTips = pickRandom(highlights, 5);
+const featuredExamples = pickRandom(examples, 5);
+---
+
+<BaseLayout
+  title="Resources | DataViz Style Guide"
+  description="Internal resource library and detail pages."
+  mainClass="resources-index-main-shell"
+>
+  <article class="tips-scene">
+    <section class="tips-shell">
+      <div class="tips-paper">
+        <header class="tips-intro">
+          <h1>Practical references and resources.</h1>
+        </header>
+
+        {rows.length > 0 ? (
+          <>
+            <div class="tips-table-wrap" aria-label="Resources table">
+              <table class="tips-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Resource</th>
+                    <th scope="col">Source</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Type</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((row) => (
+                    <tr>
+                      <td class="tips-table-tip">
+                        <a href={row.href}>
+                          <span class="tips-row-title">{row.title}</span>
+                        </a>
+                      </td>
+                      <td class="tips-table-guide">
+                        {row.sourceHref ? (
+                          <a href={row.sourceHref} target="_blank" rel="noreferrer">
+                            {row.source}
+                          </a>
+                        ) : (
+                          row.source
+                        )}
+                      </td>
+                      <td>{row.author}</td>
+                      <td>{formatType(row.type)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="tips-mobile-list" aria-label="Resources list">
+              {rows.map((row) => (
+                <article class="tips-mobile-card">
+                  <h2 class="tips-mobile-title">
+                    <a href={row.href}>{row.title}</a>
+                  </h2>
+                  <p class="tips-mobile-meta">
+                    <em>from</em>{" "}
+                    {row.sourceHref ? (
+                      <a href={row.sourceHref} target="_blank" rel="noreferrer">
+                        {row.source}
+                      </a>
+                    ) : (
+                      row.source
+                    )}
+                  </p>
+                  <p class="tips-mobile-meta">
+                    <em>by</em> {row.author}
+                  </p>
+                  <p class="tips-mobile-meta">
+                    <em>type</em> {formatType(row.type)}
+                  </p>
+                </article>
+              ))}
+            </div>
+
+            <section class="tips-links" aria-label="More style guide links">
+              <div class="tips-links-column">
+                <h2>Tips</h2>
+                <ul>
+                  {featuredTips.map((highlight) => (
+                    <li>
+                      <a href={`/tips/${highlight.slug}/`}>{highlight.data.title}</a>
+                    </li>
+                  ))}
+                </ul>
+                <a class="dv-button" href="/tips/">See all tips</a>
+              </div>
+
+              <div class="tips-links-column">
+                <h2>Style Guide Examples</h2>
+                <ul>
+                  {featuredExamples.map((example) => (
+                    <li>
+                      <a href={example.data.url} target="_blank" rel="noreferrer">
+                        {example.data.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+                <a class="dv-button" href="/examples/">See all examples</a>
+              </div>
+            </section>
+          </>
+        ) : (
+          <p class="tips-mobile-meta">No resources published yet.</p>
+        )}
+      </div>
+    </section>
+  </article>
+</BaseLayout>

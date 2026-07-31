@@ -1,0 +1,19 @@
+---
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const highlights = await getCollection("highlights");
+
+  return highlights.map((entry) => ({
+    params: { slug: entry.slug }
+  }));
+}
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  throw new Error("Missing slug parameter for /highlights/[slug] redirect.");
+}
+
+return Astro.redirect(`/tips/${slug}/`, 301);
+---

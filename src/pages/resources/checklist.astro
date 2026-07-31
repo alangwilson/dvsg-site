@@ -1,0 +1,112 @@
+---
+import { getEntry } from "astro:content";
+import GuidePage from "@components/GuidePage.astro";
+import ChecklistTree from "@components/ChecklistTree.astro";
+import type { ChecklistNode } from "@components/ChecklistTree.astro";
+
+const entry = await getEntry("guides", "checklist");
+
+if (!entry) {
+  throw new Error("Missing guides/checklist content entry.");
+}
+
+// Source: https://www.datavizstyleguide.com/checklist
+const checklist: ChecklistNode[] = [
+  { label: "Introduction" },
+  {
+    label: "Principles",
+    children: [
+      { label: "Explore vs Explain" },
+      { label: "Accessible" },
+      { label: "Equitable" },
+      { label: "Brand voice" }
+    ]
+  },
+  {
+    label: "Foundation",
+    children: [
+      {
+        label: "Color",
+        children: [
+          { label: "Categorical" },
+          { label: "Sequential" },
+          { label: "Diverging" },
+          { label: "Other" },
+          {
+            label: "Color alternatives",
+            children: [{ label: "Shape" }, { label: "Patterns and textures" }]
+          }
+        ]
+      },
+      {
+        label: "Typography",
+        children: [{ label: "Size and dimensions" }]
+      },
+      { label: "Responsiveness" },
+      {
+        label: "Medium",
+        children: [
+          { label: "Print" },
+          {
+            label: "Web",
+            children: [
+              { label: "Static vs interactive" },
+              { label: "Mouse, touch, and keyboard" }
+            ]
+          }
+        ]
+      },
+      { label: "VR / AR" }
+    ]
+  },
+  {
+    label: "Content",
+    children: [
+      { label: "Voice and tone" },
+      { label: "Grammar and mechanics" },
+      { label: "Language and inclusivity" }
+    ]
+  },
+  {
+    label: "Visualization Parts",
+    children: [
+      { label: "Title" },
+      {
+        label: "Axis",
+        children: [{ label: "X (horizontal)" }, { label: "Y (vertical)" }]
+      },
+      {
+        label: "Legend",
+        children: [{ label: "Color" }, { label: "Size" }, { label: "Shape" }]
+      },
+      {
+        label: "Marks",
+        children: [{ label: "Line" }, { label: "Point" }, { label: "Shape" }]
+      },
+      { label: "Annotation" },
+      { label: "Labels" },
+      {
+        label: "Footer",
+        children: [{ label: "Data sources" }, { label: "Notes" }]
+      }
+    ]
+  },
+  {
+    label: "Visualizations",
+    children: [
+      { label: "Line chart" },
+      { label: "Bar chart" },
+      { label: "Donut chart" },
+      { label: "Scatterplot" },
+      { label: "Histogram" },
+      { label: "Etc." }
+    ]
+  }
+];
+---
+
+<GuidePage entry={entry}>
+  <div class="tip-detail-body checklist-body">
+    <ChecklistTree nodes={checklist} />
+  </div>
+</GuidePage>

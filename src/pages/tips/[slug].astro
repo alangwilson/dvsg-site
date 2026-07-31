@@ -1,0 +1,275 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const highlights = await getCollection("highlights");
+
+  return highlights.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry }
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+const authors = await getCollection("authors");
+const author = authors.find((candidate) => candidate.data.authorId === entry.data.author);
+const highlights = (await getCollection("highlights")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const articleIndex = highlights.findIndex((candidate) => candidate.slug === entry.slug);
+const issueLabel =
+  articleIndex >= 0 ? `№ ${String(highlights.length - articleIndex).padStart(2, "0")}` : null;
+const nextTipEntry =
+  highlights.length === 0
+    ? null
+    : articleIndex >= 0
+      ? highlights[(articleIndex + 1) % highlights.length]
+      : highlights[0];
+const previousTipEntry =
+  highlights.length === 0
+    ? null
+    : articleIndex >= 0
+      ? highlights[(articleIndex - 1 + highlights.length) % highlights.length]
+      : highlights[highlights.length - 1];
+const sourceLinks = entry.data.sourceLinks ?? [];
+const primarySource = sourceLinks[0] ?? null;
+const toYouTubeEmbedUrl = (value?: string): string | null => {
+  if (!value) return null;
+
+  try {
+    const parsed = new URL(value);
+    const host = parsed.hostname.replace(/^www\./i, "").toLowerCase();
+    let videoId = "";
+
+    if (host === "youtu.be") {
+      videoId = parsed.pathname.split("/").filter(Boolean)[0] ?? "";
+    } else if (host === "youtube.com" || host === "m.youtube.com") {
+      if (parsed.pathname === "/watch") {
+        videoId = parsed.searchParams.get("v") ?? "";
+      } else if (parsed.pathname.startsWith("/embed/") || parsed.pathname.startsWith("/shorts/")) {
+        videoId = parsed.pathname.split("/")[2] ?? "";
+      }
+    }
+
+    if (!/^[A-Za-z0-9_-]{11}$/.test(videoId)) {
+      return null;
+    }
+
+    return `https://www.youtube.com/embed/${videoId}`;
+  } catch {
+    return null;
+  }
+};
+const youtubeEmbedUrl = toYouTubeEmbedUrl(entry.data.youtubeUrl);
+
+const dateLabel = entry.data.date.toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+});
+---
+
+<BaseLayout
+  title={`${entry.data.title} | DataViz Style Guide`}
+  description={entry.data.excerpt}
+  mainClass="tip-detail-main-shell"
+>
+  <article class="tip-detail-scene">
+    <section class="tip-detail-shell">
+      <div class="tip-detail-paper">
+        <header class="tip-detail-head">
+          <p class="tip-detail-kicker">
+            <span class="tip-badge" aria-hidden="true"></span>
+            <span class="tip-number">{issueLabel ?? "№ 00"}</span>
+          </p>
+          <h1>{entry.data.title}</h1>
+        </header>
+
+        <div class="tip-detail-content">
+          <div class="tip-detail-copy">
+            <p class="tip-detail-meta">
+              <span class="tip-detail-meta-mark" aria-hidden="true"></span>
+              <span>
+                Posted on <time datetime={entry.data.date.toISOString()}>{dateLabel}</time> by{" "}
+                {author ? author.data.name : entry.data.author.replace(/-/g, " ")}
+              </span>
+            </p>
+            <div class="tip-detail-body prose">
+              <Content />
+            </div>
+            {youtubeEmbedUrl && (
+              <figure class="tip-detail-video">
+                <div class="tip-detail-video-frame">
+                  <iframe
+                    src={`${youtubeEmbedUrl}?rel=0`}
+                    title={`Video for ${entry.data.title}`}
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen
+                    referrerpolicy="strict-origin-when-cross-origin"
+                  ></iframe>
+                </div>
+              </figure>
+            )}
+          </div>
+
+          <aside class="tip-detail-figure-column" aria-label="Example figure">
+            {entry.data.coverImage ? (
+              <figure class="tip-detail-figure">
+                <img
+                  src={entry.data.coverImage}
+                  width="1200"
+                  height="900"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+                {primarySource && (
+                  <figcaption>
+                    <span>fig.1</span>
+                    <a href={primarySource.url} target="_blank" rel="noreferrer">
+                      See how {primarySource.label} pairs guidance with examples.
+                    </a>
+                  </figcaption>
+                )}
+              </figure>
+            ) : (
+              <div class="tip-detail-figure tip-detail-figure-placeholder">
+                <div class="tip-detail-figure-mockup" aria-hidden="true"></div>
+                <p>
+                  {primarySource ? (
+                    <>
+                      <span>fig.1</span>
+                      <a href={primarySource.url} target="_blank" rel="noreferrer">
+                        View source: {primarySource.label}
+                      </a>
+                    </>
+                  ) : (
+                    <>
+                      <span>fig.1</span>
+                      <span>Example visualization from the referenced style guide.</span>
+                    </>
+                  )}
+                </p>
+              </div>
+            )}
+          </aside>
+
+          <div class="tip-detail-lower">
+            {author && (
+              <section class="tip-detail-author" aria-label="Author">
+                <div class={`person-avatar${author.data.headshot ? " has-image" : ""}`}>
+                  {author.data.headshot ? (
+                    <img
+                      class="person-avatar-image"
+                      src={author.data.headshot}
+                      width="160"
+                      height="160"
+                      alt={`Portrait of ${author.data.name}`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : null}
+                </div>
+                <p>
+                  {author.data.linkedin ? (
+                    <a href={author.data.linkedin} target="_blank" rel="noreferrer">
+                      {author.data.name}
+                    </a>
+                  ) : (
+                    <span>{author.data.name}</span>
+                  )}{" "}
+                  {author.data.shortBio
+                    ? author.data.shortBio
+                    : author.data.bio
+                      ? author.data.bio
+                      : "contributes practical guidance for building strong data visualization systems."}
+                </p>
+              </section>
+            )}
+
+            <div class="tip-detail-footer-meta">
+              {entry.data.tags.length > 0 && (
+                <ul class="highlight-tag-list" aria-label="Tags">
+                  {entry.data.tags.map((tag) => (
+                    <li>
+                      <span class="chip">{tag}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <nav class="tip-detail-nav-links" aria-label="Tip navigation">
+                {previousTipEntry && (
+                  <a class="tip-detail-nav-link tip-detail-nav-link-previous" href={`/tips/${previousTipEntry.slug}/`}>
+                    ‹ previous tip
+                  </a>
+                )}
+                <a class="tip-detail-nav-link tip-detail-nav-link-browse" href="/tips/">
+                  browse all tips
+                </a>
+                {nextTipEntry && (
+                  <a class="tip-detail-nav-link tip-detail-nav-link-next" href={`/tips/${nextTipEntry.slug}/`}>
+                    next tip ›
+                  </a>
+                )}
+              </nav>
+            </div>
+          </div>
+        </div>
+
+        {sourceLinks.length > 1 && (
+          <div class="tip-detail-sources">
+            <p class="highlight-source-title">Sources</p>
+            <ul class="highlight-source-list">
+              {sourceLinks.slice(1).map((link) => (
+                <li>
+                  <a href={link.url} target="_blank" rel="noreferrer">{link.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </section>
+  </article>
+
+  <script>
+    const isNavigationFocusClear = () => {
+      const activeElement = document.activeElement;
+
+      return (
+        !activeElement ||
+        activeElement === document.body ||
+        activeElement === document.documentElement
+      );
+    };
+
+    document.addEventListener("keydown", (event) => {
+      if (event.defaultPrevented || event.repeat) return;
+      if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+      if (!isNavigationFocusClear()) return;
+
+      if (event.key === "ArrowLeft") {
+        const previousLink = document.querySelector(".tip-detail-nav-link-previous");
+
+        if (previousLink instanceof HTMLAnchorElement) {
+          event.preventDefault();
+          window.location.assign(previousLink.href);
+        }
+      }
+
+      if (event.key === "ArrowRight") {
+        const nextLink = document.querySelector(".tip-detail-nav-link-next");
+
+        if (nextLink instanceof HTMLAnchorElement) {
+          event.preventDefault();
+          window.location.assign(nextLink.href);
+        }
+      }
+    });
+  </script>
+</BaseLayout>

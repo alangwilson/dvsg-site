@@ -1,0 +1,195 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const highlights = (await getCollection("highlights")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const authors = await getCollection("authors");
+const authorsById = new Map(authors.map((author) => [author.data.authorId, author.data.name]));
+
+const resources = await getCollection("resources");
+const exampleResources = resources
+  .filter((resource) => resource.data.homeCategory === "examples")
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+const otherResources = resources
+  .filter((resource) => resource.data.homeCategory === "other")
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+const pickRandom = <T,>(items: T[], count: number): T[] => {
+  const pool = [...items];
+
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+
+  return pool.slice(0, Math.min(count, pool.length));
+};
+
+const featuredExampleResources = pickRandom(exampleResources, 5);
+const featuredOtherResources = pickRandom(otherResources, 5);
+
+const issueLabel = (index: number): string => `№ ${String(highlights.length - index).padStart(2, "0")}`;
+
+const formatLongDate = (date: Date): string =>
+  date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+
+const formatShortDate = (date: Date): string =>
+  date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  });
+
+const getStyleGuideLink = (entry: (typeof highlights)[number]) => entry.data.sourceLinks?.[0] ?? null;
+
+const getStyleGuideLabel = (entry: (typeof highlights)[number]): string => {
+  const link = getStyleGuideLink(entry);
+
+  if (!link) {
+    return "DataViz Style Guide";
+  }
+
+  const cleaned = link.label
+    .replace(/\s+Data\s+Visualization\s+Style\s+Guide$/iu, "")
+    .replace(/\s+Data\s+Viz\s+Style\s+Guide$/iu, "")
+    .replace(/\s+Style\s+Guide$/iu, "")
+    .replace(/\s+Data\s+Visualization\s+Guide$/iu, "")
+    .trim();
+
+  return cleaned || link.label;
+};
+---
+
+<BaseLayout
+  title="Tips | DataViz Style Guide"
+  description="Quick tips from real style guides to help you understand what works."
+>
+  <article class="tips-scene">
+    <section class="tips-shell">
+      <div class="tips-paper">
+        <header class="tips-intro">
+          <h1>Quick tips from real style guides to help you understand what works.</h1>
+        </header>
+
+        <div class="tips-table-wrap" aria-label="Tips table">
+          <table class="tips-table">
+            <thead>
+              <tr>
+                <th scope="col">Tip</th>
+                <th scope="col">Style Guide</th>
+                <th scope="col">Author</th>
+                <th scope="col">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {highlights.map((highlight, index) => {
+                const authorName =
+                  authorsById.get(highlight.data.author) ?? highlight.data.author.replace(/-/gu, " ");
+                const styleGuideLink = getStyleGuideLink(highlight);
+                const styleGuideLabel = getStyleGuideLabel(highlight);
+
+                return (
+                  <tr>
+                    <td class="tips-table-tip">
+                      <a href={`/tips/${highlight.slug}/`}>
+                        <span class="tips-row-number">{issueLabel(index)}</span>
+                        <span class="tips-row-title">{highlight.data.title}</span>
+                      </a>
+                    </td>
+                    <td class="tips-table-guide">
+                      {styleGuideLink ? (
+                        <a href={styleGuideLink.url} target="_blank" rel="noreferrer">
+                          {styleGuideLabel}
+                        </a>
+                      ) : (
+                        <span>{styleGuideLabel}</span>
+                      )}
+                    </td>
+                    <td>{authorName}</td>
+                    <td>
+                      <time datetime={highlight.data.date.toISOString()}>
+                        <span class="tips-date-long">{formatLongDate(highlight.data.date)}</span>
+                        <span class="tips-date-short">{formatShortDate(highlight.data.date)}</span>
+                      </time>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="tips-mobile-list" aria-label="Tips list">
+          {highlights.map((highlight, index) => {
+            const authorName =
+              authorsById.get(highlight.data.author) ?? highlight.data.author.replace(/-/gu, " ");
+            const styleGuideLink = getStyleGuideLink(highlight);
+            const styleGuideLabel = getStyleGuideLabel(highlight);
+
+            return (
+              <article class="tips-mobile-card">
+                <p class="tips-mobile-number">{issueLabel(index)}</p>
+                <h2 class="tips-mobile-title">
+                  <a href={`/tips/${highlight.slug}/`}>{highlight.data.title}</a>
+                </h2>
+                <p class="tips-mobile-meta">
+                  <em>from</em>{" "}
+                  {styleGuideLink ? (
+                    <a href={styleGuideLink.url} target="_blank" rel="noreferrer">
+                      {styleGuideLabel}
+                    </a>
+                  ) : (
+                    <span>{styleGuideLabel}</span>
+                  )}
+                </p>
+                <p class="tips-mobile-meta">
+                  <em>by</em> {authorName}
+                </p>
+                <p class="tips-mobile-meta">
+                  <em>on</em> {formatLongDate(highlight.data.date)}
+                </p>
+              </article>
+            );
+          })}
+        </div>
+
+        <section class="tips-links" aria-label="More style guide links">
+          <div class="tips-links-column">
+            <h2>Style Guide Examples</h2>
+            <ul>
+              {featuredExampleResources.map((resource) => (
+                <li>
+                  <a href={resource.data.url} target="_blank" rel="noreferrer">
+                    {resource.data.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <a class="dv-button" href="/examples/">See all examples</a>
+          </div>
+
+          <div class="tips-links-column">
+            <h2>Other Articles &amp; Resources</h2>
+            <ul>
+              {featuredOtherResources.map((resource) => (
+                <li>
+                  <a href={resource.data.url} target="_blank" rel="noreferrer">
+                    {resource.data.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <a class="dv-button" href="/resources/">See all resources</a>
+          </div>
+        </section>
+      </div>
+    </section>
+  </article>
+</BaseLayout>

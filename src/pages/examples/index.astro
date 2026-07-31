@@ -1,0 +1,212 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const examples = (await getCollection("resources"))
+  .filter((entry) => entry.data.homeCategory === "examples")
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+const highlights = (await getCollection("highlights")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+const resources = (await getCollection("resources"))
+  .filter((entry) => entry.data.homeCategory === "other" || entry.data.homeCategory === "videos")
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+const formatGuideHost = (url: string): string => {
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname.replace(/^www\./i, "");
+  } catch {
+    return url;
+  }
+};
+
+const TABLE_EMPTY_VALUE = "–";
+
+const formatTableValue = (value: unknown): string => {
+  if (value === null || value === undefined) {
+    return TABLE_EMPTY_VALUE;
+  }
+
+  const stringValue = String(value).trim();
+  const normalized = stringValue.toLowerCase();
+
+  if (stringValue.length === 0 || normalized === "null" || normalized === "date not listed") {
+    return TABLE_EMPTY_VALUE;
+  }
+
+  return stringValue;
+};
+
+const organizationTypeLabelMap: Record<string, string> = {
+  "for profit": "For Profit",
+  "non-profit": "Non-Profit",
+  government: "Government",
+  "news or journalism": "News or Journalism",
+  education: "Education",
+  "higher education/research": "Higher Education/Research",
+  commercial: "Commercial",
+  unspecified: "Unspecified"
+};
+
+const formatOrganizationType = (value: unknown): string => {
+  const normalizedValue = formatTableValue(value);
+
+  if (normalizedValue === TABLE_EMPTY_VALUE) {
+    return TABLE_EMPTY_VALUE;
+  }
+
+  const formatLabelPart = (part: string): string => {
+    const trimmedPart = part.trim();
+    const mapped = organizationTypeLabelMap[trimmedPart.toLowerCase()];
+
+    if (mapped) {
+      return mapped;
+    }
+
+    return trimmedPart
+      .split(/(\s+|\/|-)/)
+      .map((segment) => {
+        if (/^\s+$|^\/$|^-$/.test(segment)) {
+          return segment;
+        }
+
+        if (/^[A-Z0-9]{2,}$/.test(segment)) {
+          return segment;
+        }
+
+        const lower = segment.toLowerCase();
+
+        if (lower === "or" || lower === "and" || lower === "of") {
+          return lower;
+        }
+
+        return `${lower.charAt(0).toUpperCase()}${lower.slice(1)}`;
+      })
+      .join("");
+  };
+
+  return normalizedValue
+    .split(",")
+    .map((part) => formatLabelPart(part))
+    .filter(Boolean)
+    .join(", ");
+};
+
+const pickRandom = <T,>(items: T[], count: number): T[] => {
+  const pool = [...items];
+
+  for (let i = pool.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+
+  return pool.slice(0, Math.min(count, pool.length));
+};
+
+const featuredTips = pickRandom(highlights, 5);
+const featuredResources = pickRandom(resources, 5);
+---
+
+<BaseLayout
+  title="Examples | DataViz Style Guide"
+  description="Curated examples of data visualization style guides."
+>
+  <article class="tips-scene">
+    <section class="tips-shell">
+      <div class="tips-paper">
+        <header class="tips-intro examples-intro">
+          <h1>Real data visualization style guide examples from real organizations.</h1>
+          <a class="dv-button" href="/contribute/">Contribute an example</a>
+        </header>
+
+        {examples.length > 0 ? (
+          <>
+            <div class="tips-table-wrap" aria-label="Examples table">
+              <table class="tips-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Example</th>
+                    <th scope="col">Guideline URL</th>
+                    <th scope="col">Organization Type</th>
+                    <th scope="col">Last Updated</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {examples.map((entry) => (
+                    <tr>
+                      <td class="tips-table-tip">
+                        <a href={entry.data.url} target="_blank" rel="noreferrer">
+                          <span class="tips-row-title">{entry.data.title}</span>
+                        </a>
+                      </td>
+                      <td class="tips-table-guide">
+                        <a href={entry.data.url} target="_blank" rel="noreferrer">
+                          {formatGuideHost(entry.data.url)}
+                        </a>
+                      </td>
+                      <td>{formatOrganizationType(entry.data.byline)}</td>
+                      <td>{formatTableValue(entry.data.source)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="tips-mobile-list" aria-label="Examples list">
+              {examples.map((entry) => (
+                <article class="tips-mobile-card">
+                  <h2 class="tips-mobile-title">
+                    <a href={entry.data.url} target="_blank" rel="noreferrer">
+                      {entry.data.title}
+                    </a>
+                  </h2>
+                  <p class="tips-mobile-meta">
+                    <em>guidelines</em>{" "}
+                    <a href={entry.data.url} target="_blank" rel="noreferrer">
+                      {formatGuideHost(entry.data.url)}
+                    </a>
+                  </p>
+                  <p class="tips-mobile-meta">
+                    <em>organization type</em> {formatOrganizationType(entry.data.byline)}
+                  </p>
+                  <p class="tips-mobile-meta">
+                    <em>last updated</em> {formatTableValue(entry.data.source)}
+                  </p>
+                </article>
+              ))}
+            </div>
+
+            <section class="tips-links" aria-label="More style guide links">
+              <div class="tips-links-column">
+                <h2>Tips</h2>
+                <ul>
+                  {featuredTips.map((highlight) => (
+                    <li>
+                      <a href={`/tips/${highlight.slug}/`}>{highlight.data.title}</a>
+                    </li>
+                  ))}
+                </ul>
+                <a class="dv-button" href="/tips/">See all tips</a>
+              </div>
+
+              <div class="tips-links-column">
+                <h2>Other Articles &amp; Resources</h2>
+                <ul>
+                  {featuredResources.map((resource) => (
+                    <li>
+                      <a href={`/resources/${resource.slug}/`}>{resource.data.title}</a>
+                    </li>
+                  ))}
+                </ul>
+                <a class="dv-button" href="/resources/">See all resources</a>
+              </div>
+            </section>
+          </>
+        ) : (
+          <p class="tips-mobile-meta">No examples published yet.</p>
+        )}
+      </div>
+    </section>
+  </article>
+</BaseLayout>

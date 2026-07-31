@@ -1,0 +1,199 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
+---
+
+<BaseLayout
+  title="Contribute | DataViz Style Guide"
+  description="Contribute a new data visualization style guide example."
+>
+  <article class="contact-scene about-scene">
+    <section class="contact-shell">
+      <div class="contact-paper">
+        <header class="contact-intro">
+          <h1>Contribute a new example</h1>
+        </header>
+
+        <div class="contact-grid contribute-grid">
+          <div class="contact-prose prose">
+            <p>
+              Share a real-world style guide example and we will review it for inclusion on the site.
+            </p>
+            <p>
+              We are looking for practical examples that include clear guidance, real implementation
+              details, and useful context for other teams.
+            </p>
+          </div>
+        </div>
+
+        <section id="contribute-form" class="contact-aside about-contact-form" aria-label="Contribute form">
+          <form class="contact-form" data-contribute-form novalidate>
+            <div class="contact-form-grid">
+              <div class="contact-form-name-grid contact-form-field-wide">
+                <div class="contact-form-field">
+                  <label for="contribute-first-name">First name</label>
+                  <input id="contribute-first-name" name="firstName" type="text" autocomplete="given-name" required />
+                </div>
+                <div class="contact-form-field">
+                  <label for="contribute-last-name">Last name</label>
+                  <input id="contribute-last-name" name="lastName" type="text" autocomplete="family-name" required />
+                </div>
+              </div>
+
+              <div class="contact-form-field contact-form-field-wide">
+                <label for="contribute-email">Email</label>
+                <input
+                  id="contribute-email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  inputmode="email"
+                  required
+                />
+              </div>
+
+              <div class="contact-form-field contact-form-field-wide">
+                <label for="contribute-example-title">Example title</label>
+                <input
+                  id="contribute-example-title"
+                  name="exampleTitle"
+                  type="text"
+                  placeholder="e.g., Spectrum Data Visualization Guidelines"
+                  required
+                />
+              </div>
+
+              <div class="contact-form-field">
+                <label for="contribute-organization">Organization</label>
+                <input
+                  id="contribute-organization"
+                  name="organization"
+                  type="text"
+                  placeholder="e.g., Adobe"
+                  required
+                />
+              </div>
+
+              <div class="contact-form-field">
+                <label for="contribute-organization-type">Organization type</label>
+                <select id="contribute-organization-type" name="organizationType" required>
+                  <option value="">Select an option</option>
+                  <option value="For Profit">For Profit</option>
+                  <option value="Non-Profit">Non-Profit</option>
+                  <option value="Government">Government</option>
+                  <option value="News or Journalism">News or Journalism</option>
+                  <option value="Higher Education/Research">Higher Education/Research</option>
+                  <option value="Education">Education</option>
+                  <option value="Commercial">Commercial</option>
+                  <option value="Unspecified">Unspecified</option>
+                </select>
+              </div>
+
+              <div class="contact-form-field contact-form-field-wide">
+                <label for="contribute-guideline-url">Guideline URL</label>
+                <input
+                  id="contribute-guideline-url"
+                  name="guidelineUrl"
+                  type="url"
+                  inputmode="url"
+                  placeholder="https://example.com/style-guide"
+                  required
+                />
+              </div>
+
+              <div class="contact-form-field contact-form-field-wide">
+                <label for="contribute-last-updated">Last updated (optional)</label>
+                <input
+                  id="contribute-last-updated"
+                  name="lastUpdated"
+                  type="text"
+                  placeholder="e.g., October 2025 or Date not listed"
+                />
+              </div>
+
+              <div class="contact-form-field contact-form-field-wide">
+                <label for="contribute-notes">Additional notes (optional)</label>
+                <textarea
+                  id="contribute-notes"
+                  name="notes"
+                  rows={4}
+                  placeholder="Any context we should know before publishing?"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="contact-form-honeypot-wrap" aria-hidden="true">
+              <label for="contribute-website">Website</label>
+              <input id="contribute-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+            </div>
+            <input type="hidden" name="formLoadedAt" value="" />
+
+            {turnstileSiteKey && (
+              <div class="contact-form-turnstile">
+                <div class="cf-turnstile" data-sitekey={turnstileSiteKey}></div>
+              </div>
+            )}
+
+            <div class="contact-form-actions">
+              <button class="dv-button" type="submit" data-contribute-form-submit>
+                Submit example
+              </button>
+              <p class="contact-form-status" data-contribute-form-status role="status" aria-live="polite"></p>
+            </div>
+          </form>
+        </section>
+      </div>
+    </section>
+  </article>
+
+  {turnstileSiteKey && (
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  )}
+  <script>
+    import { initContactForm } from "../scripts/contact-form-client";
+
+    const getValue = (formData: FormData, key: string): string => {
+      const value = formData.get(key);
+      return typeof value === "string" ? value.trim() : "";
+    };
+
+    initContactForm({
+      formSelector: "[data-contribute-form]",
+      statusSelector: "[data-contribute-form-status]",
+      submitSelector: "[data-contribute-form-submit]",
+      successFallbackMessage: "Thank you for contributing! Your submission was sent to the team.",
+      genericErrorMessage: "Unable to send your submission right now. Please try again.",
+      unavailableErrorMessage:
+        "Form backend is unavailable in this local server mode. Use `vercel dev` or test on deployed Vercel.",
+      buildPayload: (formData, payload) => {
+        const exampleTitle = getValue(formData, "exampleTitle");
+        const organization = getValue(formData, "organization");
+        const organizationType = getValue(formData, "organizationType");
+        const guidelineUrl = getValue(formData, "guidelineUrl");
+        const lastUpdated = getValue(formData, "lastUpdated") || "Date not listed";
+        const notes = getValue(formData, "notes") || "None provided";
+
+        payload.reason = "Add a style guide";
+        payload.exampleTitle = exampleTitle;
+        payload.organization = organization;
+        payload.organizationType = organizationType;
+        payload.guidelineUrl = guidelineUrl;
+        payload.lastUpdated = lastUpdated;
+        payload.notes = notes;
+        payload.message = [
+          `Example Title: ${exampleTitle}`,
+          `Organization: ${organization}`,
+          `Organization Type: ${organizationType}`,
+          `Guideline URL: ${guidelineUrl}`,
+          `Last Updated: ${lastUpdated}`,
+          "",
+          "Additional Notes:",
+          notes
+        ].join("\n");
+
+        return payload;
+      }
+    });
+  </script>
+</BaseLayout>

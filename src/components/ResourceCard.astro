@@ -1,0 +1,20 @@
+---
+interface Props {
+  title: string;
+  type: "article" | "video" | "tool" | "example";
+  summary?: string;
+  source?: string;
+  url: string;
+}
+
+const { title, type, summary, source, url } = Astro.props;
+---
+
+<article class="card">
+  <h3><a href={url} target="_blank" rel="noreferrer">{title}</a></h3>
+  {summary && <p>{summary}</p>}
+  <div class="card-meta">
+    <span class="chip">{type}</span>
+    {source && <span>{source}</span>}
+  </div>
+</article>

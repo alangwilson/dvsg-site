@@ -1,0 +1,37 @@
+---
+import { getEntry } from "astro:content";
+
+const homePage = await getEntry("pages", "home");
+
+if (!homePage || homePage.data.kind !== "home") {
+  throw new Error("Expected src/content/pages/home.md with kind: home.");
+}
+---
+
+<footer class="home-footer">
+  <div class="footer-brand">
+    <img
+      class="footer-logo"
+      src="/images/design/logos/DVSG-logo-footer.svg"
+      width="150"
+      height="141"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+
+  <nav class="footer-links" aria-label="Footer">
+    <a href="/resources/">Resources</a>
+    <a href="/tips/">Tips</a>
+    <a href="/examples/">Examples</a>
+    <a href="/about/">About</a>
+    <a href="/about/#contact-form">Contact</a>
+  </nav>
+
+  <div class="footer-cta">
+    <p>{homePage.data.footerPrompt}</p>
+    <a class="dv-button" href="/contribute/">{homePage.data.contributeLabel}</a>
+  </div>
+</footer>

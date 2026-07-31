@@ -1,0 +1,21 @@
+{
+  "name": "dvsg-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.11 <23"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "dev:vercel": "npx vercel dev --listen 4321",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check:links": "node scripts/check-links.mjs",
+    "check:security": "npm audit --omit=dev --audit-level=high"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^5.18.1"
+  }
+}

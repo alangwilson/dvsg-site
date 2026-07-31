@@ -1,0 +1,12 @@
+---
+import { getEntry } from "astro:content";
+import GuidePage from "@components/GuidePage.astro";
+
+const entry = await getEntry("guides", "getting-started");
+
+if (!entry) {
+  throw new Error("Missing guides/getting-started content entry.");
+}
+---
+
+<GuidePage entry={entry} wide />

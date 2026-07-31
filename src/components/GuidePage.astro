@@ -1,0 +1,114 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+interface Props {
+  entry: CollectionEntry<"guides">;
+  /** Widen the content column (66% desktop / 75% tablet) for long-form prose guides. */
+  wide?: boolean;
+}
+
+const { entry, wide = false } = Astro.props;
+const { Content } = await entry.render();
+const { title, summary, byline, updated, draft } = entry.data;
+
+const updatedLabel = updated
+  ? updated.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+  : null;
+const metaParts = ["DataViz Style Guide"];
+if (byline) metaParts.push(byline);
+if (updatedLabel) metaParts.push(`Updated ${updatedLabel}`);
+const showMeta = Boolean(byline || updatedLabel);
+---
+
+<BaseLayout
+  title={`${title} | Resource | DataViz Style Guide`}
+  description={summary}
+  mainClass="tip-detail-main-shell"
+  robots={draft ? "noindex, nofollow" : undefined}
+>
+  <article class="tip-detail-scene">
+    <section class="tip-detail-shell">
+      <div class="tip-detail-paper resource-detail-paper">
+        <header class="tip-detail-head resource-detail-head">
+          <p class="tip-detail-kicker resource-detail-kicker">
+            <span class="tip-badge resource-badge" aria-hidden="true"></span>
+          </p>
+          <h1>{title}</h1>
+        </header>
+
+        {draft && (
+          <p class="guide-draft-banner" role="note">
+            <strong>Draft — content pending.</strong> This page is a migration placeholder.
+            Replace the body copy and set <code>draft: false</code> in its frontmatter before cutover.
+          </p>
+        )}
+
+        <div class="tip-detail-content resource-detail-content">
+          <div class:list={["tip-detail-copy", "resource-detail-copy", wide && "guide-wide"]}>
+            {showMeta && (
+              <p class="tip-detail-meta">
+                <span class="tip-detail-meta-mark" aria-hidden="true"></span>
+                <span>{metaParts.join(" · ")}</span>
+              </p>
+            )}
+            <p class="resource-detail-summary guide-summary">{summary}</p>
+            <slot>
+              <div class="tip-detail-body prose">
+                <Content />
+              </div>
+            </slot>
+          </div>
+
+          <div class="tip-detail-lower resource-detail-lower">
+            <div class="tip-detail-footer-meta resource-detail-footer-meta">
+              <nav class="tip-detail-nav-links" aria-label="Resource navigation">
+                <a class="tip-detail-nav-link tip-detail-nav-link-browse" href="/resources/">
+                  browse all resources
+                </a>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  /* First-party guides use a regular (non-italic) lead, unlike curated resource cards. */
+  .guide-summary {
+    font-style: normal;
+  }
+
+  /* Wide long-form guides: 66% on desktop, 75% on tablet, full width on mobile. */
+  .guide-wide {
+    max-width: 66%;
+  }
+
+  .guide-wide .tip-detail-body {
+    max-width: 100%;
+  }
+
+  @media (max-width: 1100px) {
+    .guide-wide {
+      max-width: 75%;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .guide-wide {
+      max-width: 100%;
+    }
+  }
+
+  .guide-draft-banner {
+    margin: 0 0 1.5rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid #b58900;
+    border-radius: 0.4rem;
+    background: rgba(181, 137, 0, 0.12);
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+</style>

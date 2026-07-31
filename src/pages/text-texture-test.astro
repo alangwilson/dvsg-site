@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Text Texture Test</title>
+  </head>
+  <body>
+    <main>
+      <h1>Text Texture Test</h1>
+      <p class="intro">
+        This page is isolated from site styles. It now only tests `background-clip: text` variants with and without emboss.
+      </p>
+
+      <div id="supports" class="supports"></div>
+
+      <section class="grid" aria-label="Texture variants">
+        <article class="sample baseline">
+          <h2>Playfair Display Italic Headline</h2>
+          <p>Solid color baseline</p>
+        </article>
+
+        <article class="sample texture-clip texture-jpg">
+          <h2>Playfair Display Italic Headline</h2>
+          <p>JPG texture + `background-clip: text`</p>
+        </article>
+
+        <article class="sample texture-clip texture-jpg texture-emboss">
+          <h2>Playfair Display Italic Headline</h2>
+          <p>JPG texture + emboss (highlight + shadow)</p>
+        </article>
+
+        <article class="sample texture-clip texture-png texture-emboss">
+          <h2>Playfair Display Italic Headline</h2>
+          <p>PNG texture + emboss (highlight + shadow)</p>
+        </article>
+      </section>
+    </main>
+
+    <script is:inline>
+      const checks = [
+        ["background-clip:text", CSS.supports("background-clip", "text")],
+        ["-webkit-background-clip:text", CSS.supports("-webkit-background-clip", "text")],
+        ["-webkit-text-fill-color:transparent", CSS.supports("-webkit-text-fill-color", "transparent")]
+      ];
+
+      const supportsNode = document.getElementById("supports");
+      if (supportsNode) {
+        supportsNode.innerHTML = checks
+          .map(([name, ok]) => `${name}: ${ok ? "true" : "false"}`)
+          .join("<br>");
+      }
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&display=swap");
+
+  :root {
+    --ink: #292216;
+    --canvas: #e7dfc6;
+    --tile-size: 295px 295px;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: #b5ab97;
+    color: #211c13;
+    font-family: Georgia, serif;
+  }
+
+  main {
+    width: min(1180px, 94vw);
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    background: var(--canvas);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  h1 {
+    margin: 0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .intro {
+    margin: 0.8rem 0 1.2rem;
+    font-size: 1rem;
+  }
+
+  .supports {
+    margin: 0 0 1.25rem;
+    padding: 0.8rem 0.9rem;
+    border-radius: 0.35rem;
+    background: rgba(41, 34, 22, 0.08);
+    font-size: 0.9rem;
+    line-height: 1.35;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .sample {
+    background: #ddd5ba;
+    border: 1px solid rgba(41, 34, 22, 0.2);
+    border-radius: 0.45rem;
+    padding: 1rem;
+    min-height: 180px;
+  }
+
+  .sample h2 {
+    margin: 0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 1.04;
+    font-size: clamp(2rem, 4vw, 3.1rem);
+    letter-spacing: -0.01em;
+  }
+
+  .sample p {
+    margin: 0.85rem 0 0;
+    font-size: 0.85rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: rgba(41, 34, 22, 0.85);
+  }
+
+  .baseline h2 {
+    color: var(--ink);
+  }
+
+  .texture-jpg {
+    --texture-url: url("/images/design/textures/text-texture-tile.jpg");
+  }
+
+  .texture-png {
+    --texture-url: url("/images/design/textures/text-texture-tile.png");
+  }
+
+  .texture-clip h2 {
+    background-image:
+      linear-gradient(rgba(33, 27, 18, 0.36), rgba(33, 27, 18, 0.36)),
+      var(--texture-url);
+    background-size: auto, var(--tile-size);
+    background-repeat: repeat, repeat;
+    background-position: center, center;
+    background-blend-mode: multiply;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .texture-emboss h2 {
+    filter:
+      drop-shadow(0 1px 0 rgba(255, 250, 235, 0.42))
+      drop-shadow(0 -1px 0 rgba(22, 17, 11, 0.6));
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
