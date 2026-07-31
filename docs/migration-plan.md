@@ -88,7 +88,10 @@ unrelated byline typo in `vid-01-fireside-chat.md`: "Minerva Graze" → "Maxene 
 - [ ] Back up the current Squarespace site content and **export its DNS zone** to a file.
 - [ ] Record the current live target (old host) as the rollback destination.
 - [ ] Record the current known-good Vercel production deployment (for Instant Rollback).
-- [ ] Tag the repo at the intended release commit.
+- [x] Repo is now under version control and on GitHub:
+      **https://github.com/alangwilson/dvsg-site** (`main`). Connect this repo to Vercel.
+      `check:redirects` script + `docs/resend-domain-setup.md` added.
+- [ ] Tag the repo at the intended release commit (e.g. `git tag -a v1.0.0 -m "cutover" && git push --tags`).
 - [ ] **Lower DNS TTL to 300s** at least 24–48h before cutover.
 - [ ] Confirm registrar / DNS access.
 
