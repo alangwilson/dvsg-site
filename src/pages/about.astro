@@ -13,6 +13,9 @@ const team = (await getCollection("authors")).sort((a, b) =>
   a.data.name.localeCompare(b.data.name)
 );
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
+// Contact form is temporarily hidden until the Resend backend is configured.
+// Flip to true (and set the Resend env vars in Vercel) to restore it.
+const SHOW_CONTACT_FORM = false;
 ---
 
 <BaseLayout title="About | DataViz Style Guide" description="Learn about the team and contact DataViz Style Guide.">
@@ -79,6 +82,7 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
           </div>
         </section>
 
+        {SHOW_CONTACT_FORM ? (
         <section id="contact-form" class="contact-aside about-contact-form" aria-label="Contact form">
           <h2>Contact us</h2>
           <p class="contact-form-intro">
@@ -139,6 +143,12 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
             </div>
           </form>
         </section>
+        ) : (
+        <section id="contact-form" class="contact-aside about-contact-form" aria-label="Contact">
+          <h2>Contact us</h2>
+          <p class="contact-form-intro">Our contact form is temporarily unavailable. Please check back soon.</p>
+        </section>
+        )}
       </div>
     </section>
   </article>

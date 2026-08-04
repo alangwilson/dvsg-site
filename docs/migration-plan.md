@@ -83,6 +83,19 @@ unrelated byline typo in `vid-01-fireside-chat.md`: "Minerva Graze" → "Maxene 
 > direct child (`> p:first-child`) in `src/styles/base.css` — tips keep their opening drop-cap;
 > list items no longer get one.
 
+## Launch scope decision (2026-08-04)
+
+Cut over **without the contact form** for now; wire it up later. Consequences:
+
+- **No env vars are required to launch** — skip the Resend/Turnstile setup for today's cutover.
+- Both forms (on `/about/` and `/contribute/`, which post to `/api/contact`) are hidden behind
+  a `SHOW_CONTACT_FORM = false` flag in each page, with a short "temporarily unavailable" note
+  in their place. To restore: set the flag to `true` in `src/pages/about.astro` and
+  `src/pages/contribute.astro`, set the Resend env vars in Vercel (see
+  `docs/resend-domain-setup.md`), and redeploy.
+- Phase 2 env-var + Resend + Turnstile items below are **deferred** to the post-launch
+  contact-form task, not cutover blockers.
+
 ## Phase 1 — Safety net
 
 - [ ] Back up the current Squarespace site content and **export its DNS zone** to a file.

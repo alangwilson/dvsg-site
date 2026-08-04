@@ -2,6 +2,9 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
+// Submission form is temporarily hidden until the Resend backend is configured.
+// Flip to true (and set the Resend env vars in Vercel) to restore it.
+const SHOW_CONTACT_FORM = false;
 ---
 
 <BaseLayout
@@ -27,6 +30,7 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
           </div>
         </div>
 
+        {SHOW_CONTACT_FORM ? (
         <section id="contribute-form" class="contact-aside about-contact-form" aria-label="Contribute form">
           <form class="contact-form" data-contribute-form novalidate>
             <div class="contact-form-grid">
@@ -143,6 +147,11 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
             </div>
           </form>
         </section>
+        ) : (
+        <section class="contact-aside about-contact-form" aria-label="Contribute">
+          <p class="contact-form-intro">Our submission form is temporarily unavailable. Please check back soon.</p>
+        </section>
+        )}
       </div>
     </section>
   </article>
