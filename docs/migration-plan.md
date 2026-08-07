@@ -152,14 +152,25 @@ Cut over **without the contact form** for now; wire it up later. Consequences:
 **Go/No-Go:** owner (Alan; backup Amy) confirms Phase 1 safeguards restore and all Phase 3
 priority items pass. Any unresolved priority item = No-Go.
 
-## Phase 4 — Cutover
+## Phase 4 — Cutover ✅ COMPLETE (2026-08-07)
 
-- [ ] Promote the validated build to Vercel production.
-- [ ] Attach `www.datavizstyleguide.com` + apex to the Vercel project; confirm TLS.
-- [ ] Smoke test live: homepage, 3–5 top pages, one redirected old URL, one contact
-      submission, analytics ping.
-- [ ] Submit the sitemap to Search Console.
-- [ ] Leave the old Squarespace site intact and running.
+- [x] Promote the validated build to Vercel production (repo `alangwilson/dvsg-site` connected).
+- [x] Attach `www.datavizstyleguide.com` + apex; **TLS valid**. DNS is at **Namecheap**
+      (nameservers `dns1/dns2.registrar-servers.com`), not Squarespace — the domain was only
+      *connected* to Squarespace. Namecheap records: apex `A @ → 216.198.79.1`,
+      `CNAME www → a43ce873bf46e992.vercel-dns-017.com`; MX/SPF email-forwarding preserved.
+      (The Squarespace "disconnect domain" click was harmless — it only unlinked the SQSP site.)
+- [x] Smoke test live: all 21 redirects 308 to the right page on `https://www.datavizstyleguide.com`;
+      `/`, `/tips/`, `/resources/`, `/examples/`, `/about/`, `/contribute/`, both guide pages → 200;
+      unknown route → 404; apex → www 301; http → https 308. (`npm run check:redirects <url>`.)
+- [ ] Submit the sitemap to Search Console: `https://www.datavizstyleguide.com/sitemap-index.xml`.
+- [x] Old Squarespace site left intact (kept for rollback). Domain is disconnected from it but the
+      site/content still exist; reconnecting would restore the old site if ever needed.
+
+> **Deferred:** the contact form is hidden behind `SHOW_CONTACT_FORM = false` in `about.astro`
+> and `contribute.astro` (both show an interim "temporarily unavailable" note). Restore by
+> setting up Resend (see `docs/resend-domain-setup.md`), adding the env vars, and flipping the
+> flag to `true`.
 
 ## Phase 5 — Post-migration monitoring
 
