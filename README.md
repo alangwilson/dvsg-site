@@ -4,7 +4,7 @@ This is an offline scaffold for the DataViz Style Guide redesign.
 
 ## Stack
 
-- Astro (static site)
+- Astro 7 (static site; Node 22.19 or newer within Node 22)
 - Content collections for Highlights, Resources, Authors, and singleton Pages
 
 ## Run locally

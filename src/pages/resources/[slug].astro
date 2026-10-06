@@ -1,5 +1,5 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import BaseLayout from "@layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
@@ -8,18 +8,18 @@ export async function getStaticPaths() {
   return resources
     .filter((entry) => entry.data.homeCategory === "other" || entry.data.homeCategory === "videos")
     .map((entry) => ({
-      params: { slug: entry.slug },
+      params: { slug: entry.id },
       props: { entry }
     }));
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 const resources = (await getCollection("resources"))
   .filter((candidate) => candidate.data.homeCategory === "other" || candidate.data.homeCategory === "videos")
   .sort((a, b) => a.data.title.localeCompare(b.data.title));
 
-const resourceIndex = resources.findIndex((candidate) => candidate.slug === entry.slug);
+const resourceIndex = resources.findIndex((candidate) => candidate.id === entry.id);
 const previousResourceEntry =
   resources.length === 0
     ? null
@@ -128,7 +128,7 @@ const youtubeEmbedUrl = toYouTubeEmbedUrl(entry.data.youtubeUrl ?? entry.data.ur
                 {previousResourceEntry && (
                   <a
                     class="tip-detail-nav-link tip-detail-nav-link-previous"
-                    href={`/resources/${previousResourceEntry.slug}/`}
+                    href={`/resources/${previousResourceEntry.id}/`}
                   >
                     ‹ previous resource
                   </a>
@@ -137,7 +137,7 @@ const youtubeEmbedUrl = toYouTubeEmbedUrl(entry.data.youtubeUrl ?? entry.data.ur
                   browse all resources
                 </a>
                 {nextResourceEntry && (
-                  <a class="tip-detail-nav-link tip-detail-nav-link-next" href={`/resources/${nextResourceEntry.slug}/`}>
+                  <a class="tip-detail-nav-link tip-detail-nav-link-next" href={`/resources/${nextResourceEntry.id}/`}>
                     next resource ›
                   </a>
                 )}

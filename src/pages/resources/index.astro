@@ -27,7 +27,7 @@ interface ResourceRow {
 
 const rows: ResourceRow[] = [
   ...resources.map((entry) => ({
-    href: `/resources/${entry.slug}/`,
+    href: `/resources/${entry.id}/`,
     title: entry.data.title,
     source: entry.data.source,
     sourceHref: entry.data.url,
@@ -35,7 +35,7 @@ const rows: ResourceRow[] = [
     type: entry.data.type
   })),
   ...guides.map((entry) => ({
-    href: `/resources/${entry.slug}/`,
+    href: `/resources/${entry.id}/`,
     title: entry.data.title,
     source: entry.data.listing!.source,
     sourceHref: null,
@@ -145,7 +145,7 @@ const featuredExamples = pickRandom(examples, 5);
                 <ul>
                   {featuredTips.map((highlight) => (
                     <li>
-                      <a href={`/tips/${highlight.slug}/`}>{highlight.data.title}</a>
+                      <a href={`/tips/${highlight.id}/`}>{highlight.data.title}</a>
                     </li>
                   ))}
                 </ul>

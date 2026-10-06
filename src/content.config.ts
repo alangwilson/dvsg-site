@@ -1,4 +1,6 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -25,7 +27,7 @@ const editorialReviewSchema = z.object({
 });
 
 const highlights = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/*.md", base: "./src/content/highlights" }),
   schema: z.object({
     title: z.string().trim().min(8),
     date: z.coerce.date(),
@@ -49,7 +51,7 @@ const highlights = defineCollection({
 });
 
 const resources = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/*.md", base: "./src/content/resources" }),
   schema: z.object({
     title: z.string().trim().min(3),
     type: z.enum(["article", "video", "tool", "example"]),
@@ -68,7 +70,7 @@ const resources = defineCollection({
 // "Guide to Making a Data Viz Style Guide"). Unlike `resources`, these host their own
 // content and do not link out, so no external `url`/`source` is required.
 const guides = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/*.md", base: "./src/content/guides" }),
   schema: z.object({
     title: z.string().trim().min(3),
     summary: z.string().trim().min(12),
@@ -88,7 +90,7 @@ const guides = defineCollection({
 });
 
 const authors = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/*.md", base: "./src/content/authors" }),
   schema: z.object({
     name: z.string().trim().min(2),
     authorId: z.string().regex(slugPattern, "Author ID must use lowercase-hyphen format."),
@@ -102,7 +104,7 @@ const authors = defineCollection({
 });
 
 const pages = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/*.md", base: "./src/content/pages" }),
   schema: z.discriminatedUnion("kind", [
     z.object({
       kind: z.literal("home"),

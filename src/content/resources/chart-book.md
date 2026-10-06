@@ -1,16 +1,16 @@
 ---
-title: "What Your Organization Needs a Data Visualization Style Guide For"
+title: "Why Your Organization Needs a Data Visualization Style Guide"
 type: "article"
 homeCategory: "other"
-url: "https://nightingaledvs.com/what-your-organization-needs-a-data-viz-style-guide/"
+url: "https://policyviz.com/2021/03/16/why-your-organization-needs-a-data-visualization-style-guide/"
 summary: "How to frame the value of a style guide for leadership and teams."
-source: "Nightingale"
+source: "PolicyViz"
 byline: "Jonathan Schwabish"
 image: "/images/uploads/resources/article-why-organization-needs.png"
 editorialReview:
   factChecked: true
   linkChecked: true
   styleChecked: true
-  reviewedBy: "DVSG Editorial"
-  reviewedAt: 2026-02-17
+  reviewedBy: "Copilot"
+  reviewedAt: 2026-10-06
 ---

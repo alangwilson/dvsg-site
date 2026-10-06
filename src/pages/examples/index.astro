@@ -183,7 +183,7 @@ const featuredResources = pickRandom(resources, 5);
                 <ul>
                   {featuredTips.map((highlight) => (
                     <li>
-                      <a href={`/tips/${highlight.slug}/`}>{highlight.data.title}</a>
+                      <a href={`/tips/${highlight.id}/`}>{highlight.data.title}</a>
                     </li>
                   ))}
                 </ul>
@@ -195,7 +195,7 @@ const featuredResources = pickRandom(resources, 5);
                 <ul>
                   {featuredResources.map((resource) => (
                     <li>
-                      <a href={`/resources/${resource.slug}/`}>{resource.data.title}</a>
+                      <a href={`/resources/${resource.id}/`}>{resource.data.title}</a>
                     </li>
                   ))}
                 </ul>

@@ -98,7 +98,7 @@ const getStyleGuideLabel = (entry: (typeof highlights)[number]): string => {
                 return (
                   <tr>
                     <td class="tips-table-tip">
-                      <a href={`/tips/${highlight.slug}/`}>
+                      <a href={`/tips/${highlight.id}/`}>
                         <span class="tips-row-number">{issueLabel(index)}</span>
                         <span class="tips-row-title">{highlight.data.title}</span>
                       </a>
@@ -137,7 +137,7 @@ const getStyleGuideLabel = (entry: (typeof highlights)[number]): string => {
               <article class="tips-mobile-card">
                 <p class="tips-mobile-number">{issueLabel(index)}</p>
                 <h2 class="tips-mobile-title">
-                  <a href={`/tips/${highlight.slug}/`}>{highlight.data.title}</a>
+                  <a href={`/tips/${highlight.id}/`}>{highlight.data.title}</a>
                 </h2>
                 <p class="tips-mobile-meta">
                   <em>from</em>{" "}

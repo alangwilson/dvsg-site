@@ -14,6 +14,7 @@ const SITEMAP_EXCLUDE = [
 export default defineConfig({
   site: SITE,
   output: "static",
+  compressHTML: true,
   devToolbar: {
     enabled: false
   },

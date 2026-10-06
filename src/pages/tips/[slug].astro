@@ -1,18 +1,18 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import BaseLayout from "@layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
   const highlights = await getCollection("highlights");
 
   return highlights.map((entry) => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.id },
     props: { entry }
   }));
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 
 const authors = await getCollection("authors");
 const author = authors.find((candidate) => candidate.data.authorId === entry.data.author);
@@ -20,7 +20,7 @@ const highlights = (await getCollection("highlights")).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
 
-const articleIndex = highlights.findIndex((candidate) => candidate.slug === entry.slug);
+const articleIndex = highlights.findIndex((candidate) => candidate.id === entry.id);
 const issueLabel =
   articleIndex >= 0 ? `№ ${String(highlights.length - articleIndex).padStart(2, "0")}` : null;
 const nextTipEntry =
@@ -204,7 +204,7 @@ const dateLabel = entry.data.date.toLocaleDateString("en-US", {
               )}
               <nav class="tip-detail-nav-links" aria-label="Tip navigation">
                 {previousTipEntry && (
-                  <a class="tip-detail-nav-link tip-detail-nav-link-previous" href={`/tips/${previousTipEntry.slug}/`}>
+                  <a class="tip-detail-nav-link tip-detail-nav-link-previous" href={`/tips/${previousTipEntry.id}/`}>
                     ‹ previous tip
                   </a>
                 )}
@@ -212,7 +212,7 @@ const dateLabel = entry.data.date.toLocaleDateString("en-US", {
                   browse all tips
                 </a>
                 {nextTipEntry && (
-                  <a class="tip-detail-nav-link tip-detail-nav-link-next" href={`/tips/${nextTipEntry.slug}/`}>
+                  <a class="tip-detail-nav-link tip-detail-nav-link-next" href={`/tips/${nextTipEntry.id}/`}>
                     next tip ›
                   </a>
                 )}

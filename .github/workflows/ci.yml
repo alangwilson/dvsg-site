@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
@@ -25,7 +25,10 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Check internal and key external links
+      - name: Test link checker
+        run: node --test scripts/check-links.test.mjs
+
+      - name: Check internal routes and resource source links
         run: npm run check:links
 
   security:
@@ -37,7 +40,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies

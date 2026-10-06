@@ -1,4 +1,6 @@
-import { access } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
+import { extname, join } from "node:path";
+import { pathToFileURL } from "node:url";
 
 const INTERNAL_ROUTE_FILES = [
   "dist/index.html",
@@ -9,14 +11,7 @@ const INTERNAL_ROUTE_FILES = [
   "dist/contribute/index.html"
 ];
 
-const KEY_EXTERNAL_URLS = [
-  "https://www.datavizstyleguide.com/",
-  "https://fonts.googleapis.com/",
-  "https://fonts.gstatic.com/",
-  "https://challenges.cloudflare.com/"
-];
-
-const EXTERNAL_SUCCESS = new Set([200, 204, 301, 302, 307, 308, 403, 404]);
+const SITE_ORIGIN = "https://www.datavizstyleguide.com";
 
 const checkInternalRoutes = async () => {
   const missing = [];
@@ -35,34 +30,90 @@ const checkInternalRoutes = async () => {
   }
 };
 
-const checkExternalUrl = async (url) => {
+export const checkExternalUrl = async (url, fetchUrl = fetch) => {
   const methodChain = ["HEAD", "GET"];
+  const failures = [];
 
   for (const method of methodChain) {
     try {
-      const response = await fetch(url, {
+      const response = await fetchUrl(url, {
         method,
-        redirect: "follow"
+        redirect: "follow",
+        signal: AbortSignal.timeout(15000)
       });
+      await response.body?.cancel();
 
-      if (EXTERNAL_SUCCESS.has(response.status)) {
+      if (response.ok) {
         return;
       }
-    } catch {
-      // Continue and try next method.
+      failures.push(`${method}: HTTP ${response.status}`);
+    } catch (error) {
+      failures.push(`${method}: ${error.message}`);
     }
   }
 
-  throw new Error(`Unable to verify external URL: ${url}`);
+  throw new Error(`Unable to verify external URL: ${url} (${failures.join("; ")})`);
 };
 
-const checkExternalUrls = async () => {
-  for (const url of KEY_EXTERNAL_URLS) {
-    await checkExternalUrl(url);
+export const readResourceLinks = async (dist = "dist", slugs = []) => {
+  const directory = join(dist, "resources");
+  const entries = await readdir(directory, { withFileTypes: true });
+  const selected = entries.filter((entry) => entry.isDirectory() &&
+    (slugs.length === 0 || slugs.includes(entry.name)));
+  for (const slug of slugs) {
+    if (!selected.some((entry) => entry.name === slug)) {
+      throw new Error(`Missing built resource: ${slug}`);
+    }
   }
+  const links = [];
+  for (const entry of selected) {
+    const html = await readFile(join(directory, entry.name, "index.html"), "utf8");
+    const match = html.match(/<a\b[^>]*href="([^"]+)"[^>]*>\s*Visit original source\s*<\/a>/);
+    if (match) {
+      links.push({ slug: entry.name, url: match[1].replaceAll("&amp;", "&") });
+    } else if (slugs.includes(entry.name)) {
+      throw new Error(`Missing original source link: ${entry.name}`);
+    }
+  }
+  return links;
 };
 
-await checkInternalRoutes();
-await checkExternalUrls();
+export const checkSourceUrl = async (url, dist = "dist", fetchUrl = fetch) => {
+  const parsed = new URL(url);
+  if (parsed.origin === SITE_ORIGIN) {
+    const path = decodeURIComponent(parsed.pathname);
+    await access(join(dist, path, extname(path) ? "" : "index.html"));
+    return;
+  }
+  await checkExternalUrl(url, fetchUrl);
+};
 
-console.log("Link checks passed.");
+const main = async () => {
+  await checkInternalRoutes();
+  const links = await readResourceLinks("dist", process.argv.slice(2));
+  const checked = new Map();
+  let failures = 0;
+  for (const { slug, url } of links) {
+    if (!checked.has(url)) {
+      checked.set(url, checkSourceUrl(url));
+    }
+    try {
+      await checked.get(url);
+      console.log(`OK ${slug}: ${url}`);
+    } catch (error) {
+      failures += 1;
+      console.error(`FAIL ${slug}: ${error.message}`);
+    }
+  }
+  if (failures > 0) {
+    throw new Error(`${failures} resource source links failed. Blocked requests require manual review.`);
+  }
+  console.log(`Link checks passed (${links.length} resource source links).`);
+};
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
+}

@@ -24,10 +24,10 @@ const randomTipFromRemaining =
     : undefined;
 const tipCards = [mostRecentTip, randomTipFromRemaining].filter(Boolean);
 const tipNumbersBySlug = new Map(
-  highlights.map((entry, index) => [entry.slug, `№ ${String(highlights.length - index).padStart(2, "0")}`])
+  highlights.map((entry, index) => [entry.id, `№ ${String(highlights.length - index).padStart(2, "0")}`])
 );
 
-const resources = (await getCollection("resources")).sort((a, b) => a.slug.localeCompare(b.slug));
+const resources = (await getCollection("resources")).sort((a, b) => a.id.localeCompare(b.id));
 const exampleResources = resources.filter((item) => item.data.homeCategory === "examples").slice(0, 5);
 const videoResources = resources.filter((item) => item.data.homeCategory === "videos").slice(0, 5);
 const otherResources = resources.filter((item) => item.data.homeCategory === "other").slice(0, 5);
@@ -127,10 +127,10 @@ const isNavActive = (section: "tips" | "resources" | "examples" | "about"): bool
               <article class="tip-card" aria-label={`Tip ${index + 1}`}>
                 <div class="tip-card-top">
                   <span class="tip-badge"></span>
-                  <span class="tip-number">{tipNumbersBySlug.get(entry.slug) ?? "№ 00"}</span>
+                  <span class="tip-number">{tipNumbersBySlug.get(entry.id) ?? "№ 00"}</span>
                 </div>
                 <h2>
-                  <a href={`/tips/${entry.slug}/`}>{entry.data.title}</a>
+                  <a href={`/tips/${entry.id}/`}>{entry.data.title}</a>
                 </h2>
                 <p class="tip-author">
                   {tipAuthor?.data.headshot ? (
@@ -190,7 +190,7 @@ const isNavActive = (section: "tips" | "resources" | "examples" | "about"): bool
             <ul>
               {videoResources.map((item) => (
                 <li>
-                  <a href={`/resources/${item.slug}/`}>{item.data.title}</a>
+                  <a href={`/resources/${item.id}/`}>{item.data.title}</a>
                   {item.data.byline && <p>{item.data.byline}</p>}
                 </li>
               ))}
@@ -203,7 +203,7 @@ const isNavActive = (section: "tips" | "resources" | "examples" | "about"): bool
             <ul>
               {otherResources.map((item) => (
                 <li>
-                  <a href={`/resources/${item.slug}/`}>{item.data.title}</a>
+                  <a href={`/resources/${item.id}/`}>{item.data.title}</a>
                   {item.data.byline && <p>{item.data.byline}</p>}
                 </li>
               ))}
