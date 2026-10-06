@@ -7,6 +7,7 @@ const SITE = "https://www.datavizstyleguide.com";
 // redirect stubs that only bounce to a canonical route.
 const SITEMAP_EXCLUDE = [
   `${SITE}/text-texture-test/`,
+  `${SITE}/contact/`,
   `${SITE}/videos/`,
   `${SITE}/highlights/`
 ];

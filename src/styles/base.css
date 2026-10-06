@@ -814,6 +814,15 @@ h1 {
   margin-top: 1.22rem;
 }
 
+.getting-started-checklist {
+  margin: 0.8rem 0 0;
+}
+
+.guide-related-link {
+  margin: 0.8rem 0 0;
+  font-family: var(--font-prose);
+}
+
 .resource-columns {
   margin-top: 3.1rem;
   display: grid;
@@ -2591,7 +2600,9 @@ h1 {
 
 .tip-detail-nav-link {
   display: inline-flex;
-  white-space: nowrap;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
   text-decoration: none;
   font-family: "Alexandria", var(--font-ui), sans-serif;
   font-size: 0.82rem;
@@ -2606,14 +2617,17 @@ h1 {
 
 .tip-detail-nav-link-previous {
   justify-self: start;
+  text-align: left;
 }
 
 .tip-detail-nav-link-browse {
   justify-self: center;
+  text-align: center;
 }
 
 .tip-detail-nav-link-next {
   justify-self: end;
+  text-align: right;
 }
 
 .tip-detail-sources {
@@ -2868,7 +2882,7 @@ h1 {
 
   .tip-detail-content {
     margin-top: 1.55rem;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.5rem;
   }
 
@@ -3420,6 +3434,18 @@ h1 {
 
   .tip-detail-nav-links {
     column-gap: 0.4rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    row-gap: 0.8rem;
+  }
+
+  .tip-detail-nav-link-browse {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .tip-detail-nav-link-next {
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .tip-detail-sources {

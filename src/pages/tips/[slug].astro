@@ -131,9 +131,7 @@ const dateLabel = entry.data.date.toLocaleDateString("en-US", {
                 {primarySource && (
                   <figcaption>
                     <span>fig.1</span>
-                    <a href={primarySource.url} target="_blank" rel="noreferrer">
-                      See how {primarySource.label} pairs guidance with examples.
-                    </a>
+                    <a href={primarySource.url} target="_blank" rel="noreferrer">See how {primarySource.label} pairs guidance with examples.</a>
                   </figcaption>
                 )}
               </figure>
@@ -144,9 +142,7 @@ const dateLabel = entry.data.date.toLocaleDateString("en-US", {
                   {primarySource ? (
                     <>
                       <span>fig.1</span>
-                      <a href={primarySource.url} target="_blank" rel="noreferrer">
-                        View source: {primarySource.label}
-                      </a>
+                      <a href={primarySource.url} target="_blank" rel="noreferrer">View source: {primarySource.label}</a>
                     </>
                   ) : (
                     <>
@@ -177,9 +173,7 @@ const dateLabel = entry.data.date.toLocaleDateString("en-US", {
                 </div>
                 <p>
                   {author.data.linkedin ? (
-                    <a href={author.data.linkedin} target="_blank" rel="noreferrer">
-                      {author.data.name}
-                    </a>
+                    <a href={author.data.linkedin} target="_blank" rel="noreferrer">{author.data.name}</a>
                   ) : (
                     <span>{author.data.name}</span>
                   )}{" "}

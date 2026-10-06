@@ -98,9 +98,7 @@ const featuredExamples = pickRandom(examples, 5);
                       </td>
                       <td class="tips-table-guide">
                         {row.sourceHref ? (
-                          <a href={row.sourceHref} target="_blank" rel="noreferrer">
-                            {row.source}
-                          </a>
+                          <a href={row.sourceHref} target="_blank" rel="noreferrer">{row.source}</a>
                         ) : (
                           row.source
                         )}
@@ -122,9 +120,7 @@ const featuredExamples = pickRandom(examples, 5);
                   <p class="tips-mobile-meta">
                     <em>from</em>{" "}
                     {row.sourceHref ? (
-                      <a href={row.sourceHref} target="_blank" rel="noreferrer">
-                        {row.source}
-                      </a>
+                      <a href={row.sourceHref} target="_blank" rel="noreferrer">{row.source}</a>
                     ) : (
                       row.source
                     )}
@@ -157,9 +153,7 @@ const featuredExamples = pickRandom(examples, 5);
                 <ul>
                   {featuredExamples.map((example) => (
                     <li>
-                      <a href={example.data.url} target="_blank" rel="noreferrer">
-                        {example.data.title}
-                      </a>
+                      <a href={example.data.url} target="_blank" rel="noreferrer">{example.data.title}</a>
                     </li>
                   ))}
                 </ul>

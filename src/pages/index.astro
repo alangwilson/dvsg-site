@@ -168,7 +168,10 @@ const isNavActive = (section: "tips" | "resources" | "examples" | "about"): bool
               </article>
             ))}
           </div>
-          <a class="dv-button" href="/tips/">{homePage.data.gettingStartedCtaLabel}</a>
+          <a class="dv-button" href="/resources/getting-started/">{homePage.data.gettingStartedCtaLabel}</a>
+          <p class="getting-started-checklist">
+            Ready to check your coverage? <a href="/resources/checklist/">Use the style guide checklist</a>.
+          </p>
         </section>
 
         <section class="resource-columns" aria-label="Resources and examples">
@@ -232,9 +235,7 @@ const isNavActive = (section: "tips" | "resources" | "examples" | "about"): bool
                 </div>
                 <p>
                   {author.data.linkedin ? (
-                    <a href={author.data.linkedin} target="_blank" rel="noreferrer">
-                      {author.data.name}
-                    </a>
+                    <a href={author.data.linkedin} target="_blank" rel="noreferrer">{author.data.name}</a>
                   ) : (
                     <strong>{author.data.name}</strong>
                   )}{" "}

@@ -13,6 +13,7 @@
     "preview": "astro preview",
     "check:links": "node scripts/check-links.mjs",
     "check:redirects": "node scripts/check-redirects.mjs",
+    "check:sitemap": "node scripts/check-sitemap.mjs",
     "check:security": "npm audit --omit=dev --audit-level=high"
   },
   "dependencies": {

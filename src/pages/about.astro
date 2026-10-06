@@ -68,9 +68,7 @@ const SHOW_CONTACT_FORM = false;
                   </div>
                   <p>
                     {author.data.linkedin ? (
-                      <a href={author.data.linkedin} target="_blank" rel="noreferrer">
-                        {author.data.name}
-                      </a>
+                      <a href={author.data.linkedin} target="_blank" rel="noreferrer">{author.data.name}</a>
                     ) : (
                       <strong>{author.data.name}</strong>
                     )}{" "}

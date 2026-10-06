@@ -20,6 +20,11 @@ const metaParts = ["DataViz Style Guide"];
 if (byline) metaParts.push(byline);
 if (updatedLabel) metaParts.push(`Updated ${updatedLabel}`);
 const showMeta = Boolean(byline || updatedLabel);
+const relatedGuide = entry.id === "checklist"
+  ? { href: "/resources/getting-started/", label: "Read the guide to making a data viz style guide" }
+  : entry.id === "getting-started"
+    ? { href: "/resources/checklist/", label: "Use the data visualization style guide checklist" }
+    : null;
 ---
 
 <BaseLayout
@@ -54,6 +59,9 @@ const showMeta = Boolean(byline || updatedLabel);
               </p>
             )}
             <p class="resource-detail-summary guide-summary">{summary}</p>
+            {relatedGuide && (
+              <p class="guide-related-link"><a href={relatedGuide.href}>{relatedGuide.label}</a></p>
+            )}
             <slot>
               <div class="tip-detail-body prose">
                 <Content />

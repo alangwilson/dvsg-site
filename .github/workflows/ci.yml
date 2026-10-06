@@ -26,7 +26,10 @@ jobs:
         run: npm run build
 
       - name: Test link checker
-        run: node --test scripts/check-links.test.mjs
+        run: node --test scripts/*.test.mjs
+
+      - name: Check canonical sitemap
+        run: npm run check:sitemap
 
       - name: Check internal routes and resource source links
         run: npm run check:links

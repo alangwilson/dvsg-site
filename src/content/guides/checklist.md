@@ -1,5 +1,5 @@
 ---
-title: "What to Consider When Creating a Data Visualization Style Guide"
+title: "Data Visualization Style Guide Checklist"
 summary: "Style guides take many shapes and sizes, but here is a generic checklist you can use as a starting point for your own guide. Most guides start small with only a handful of resources and grow over time with the needs of the organization."
 draft: false
 listing:

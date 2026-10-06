@@ -141,9 +141,7 @@ const featuredResources = pickRandom(resources, 5);
                         </a>
                       </td>
                       <td class="tips-table-guide">
-                        <a href={entry.data.url} target="_blank" rel="noreferrer">
-                          {formatGuideHost(entry.data.url)}
-                        </a>
+                        <a href={entry.data.url} target="_blank" rel="noreferrer">{formatGuideHost(entry.data.url)}</a>
                       </td>
                       <td>{formatOrganizationType(entry.data.byline)}</td>
                       <td>{formatTableValue(entry.data.source)}</td>
@@ -157,15 +155,11 @@ const featuredResources = pickRandom(resources, 5);
               {examples.map((entry) => (
                 <article class="tips-mobile-card">
                   <h2 class="tips-mobile-title">
-                    <a href={entry.data.url} target="_blank" rel="noreferrer">
-                      {entry.data.title}
-                    </a>
+                    <a href={entry.data.url} target="_blank" rel="noreferrer">{entry.data.title}</a>
                   </h2>
                   <p class="tips-mobile-meta">
                     <em>guidelines</em>{" "}
-                    <a href={entry.data.url} target="_blank" rel="noreferrer">
-                      {formatGuideHost(entry.data.url)}
-                    </a>
+                    <a href={entry.data.url} target="_blank" rel="noreferrer">{formatGuideHost(entry.data.url)}</a>
                   </p>
                   <p class="tips-mobile-meta">
                     <em>organization type</em> {formatOrganizationType(entry.data.byline)}
