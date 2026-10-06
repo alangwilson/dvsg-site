@@ -16,7 +16,7 @@
     "check:security": "npm audit --omit=dev --audit-level=high"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/sitemap": "^3.7.4",
     "astro": "^7.3.6"
   }
 }
