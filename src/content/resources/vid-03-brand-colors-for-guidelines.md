@@ -1,15 +1,15 @@
 ---
-title: "How to Create Brand Colors for Data Visualization Style Guidelines"
+title: "Why Data Viz Needs a Style Guide"
 type: "video"
 homeCategory: "videos"
-url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-summary: "Practical steps for extending brand palettes into chart-safe colors."
+url: "https://www.youtube.com/watch?v=SkATiaTJXFU"
+summary: "Amy Cesal explains why data visualization needs style guides in this Chi Data Viz talk."
 source: "YouTube"
 byline: "Amy Cesal"
 editorialReview:
   factChecked: true
   linkChecked: true
   styleChecked: true
-  reviewedBy: "DVSG Editorial"
-  reviewedAt: 2026-02-17
+  reviewedBy: "Copilot"
+  reviewedAt: 2026-10-18
 ---

@@ -1312,16 +1312,16 @@ h1 {
   line-height: 1.2;
 }
 
-.tips-table tbody tr:nth-child(odd) > td {
+.tips-table tbody tr:hover > td {
   background-color: rgba(227, 207, 160, 0.3);
 }
 
 @supports (mix-blend-mode: multiply) {
-  .tips-table tbody tr:nth-child(odd) > td {
+  .tips-table tbody tr:hover > td {
     background-color: transparent;
   }
 
-  .tips-table tbody tr:nth-child(odd) > td::before {
+  .tips-table tbody tr:hover > td::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -2327,6 +2327,17 @@ h1 {
   padding-right: 0.34em;
   margin-right: -0.1em;
   padding-bottom: 0.13em;
+}
+
+@media (min-width: 1101px) {
+  .resource-detail-head {
+    width: 80%;
+    max-width: 80%;
+  }
+
+  .resource-detail-head h1 {
+    max-width: none;
+  }
 }
 
 .tip-detail-content {

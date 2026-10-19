@@ -2,7 +2,7 @@
 title: "More than a Style Guide: Data Visualization for Design Systems"
 type: "video"
 homeCategory: "videos"
-url: "https://www.youtube.com/watch?v=aqz-KE-bpKQ"
+url: "https://www.youtube.com/live/UqXqO4zx34s?si=RehyNb__ewTlW0F4&t=1116"
 summary: "How visualization rules fit into broader product design systems."
 source: "YouTube"
 byline: "Alan Wilson"
@@ -10,6 +10,6 @@ editorialReview:
   factChecked: true
   linkChecked: true
   styleChecked: true
-  reviewedBy: "DVSG Editorial"
-  reviewedAt: 2026-02-17
+  reviewedBy: "Copilot"
+  reviewedAt: 2026-10-18
 ---

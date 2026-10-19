@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import BaseLayout from "@layouts/BaseLayout.astro";
+import { formatDateMetadata } from "@utils/date";
 
 export async function getStaticPaths() {
   const resources = await getCollection("resources");
@@ -35,7 +36,7 @@ const nextResourceEntry =
 const bodyText = typeof entry.body === "string" ? entry.body : "";
 const hasBody = bodyText.trim().length > 0;
 const formatType = (value: string): string => `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
-const resourceImage = entry.data.image ?? "/images/uploads/resources/article-what-are-guidelines.png";
+const resourceImage = entry.data.image;
 const toYouTubeEmbedUrl = (value?: string): string | null => {
   if (!value) return null;
 
@@ -49,7 +50,11 @@ const toYouTubeEmbedUrl = (value?: string): string | null => {
     } else if (host === "youtube.com" || host === "m.youtube.com") {
       if (parsed.pathname === "/watch") {
         videoId = parsed.searchParams.get("v") ?? "";
-      } else if (parsed.pathname.startsWith("/embed/") || parsed.pathname.startsWith("/shorts/")) {
+      } else if (
+        parsed.pathname.startsWith("/embed/") ||
+        parsed.pathname.startsWith("/shorts/") ||
+        parsed.pathname.startsWith("/live/")
+      ) {
         videoId = parsed.pathname.split("/")[2] ?? "";
       }
     }
@@ -58,7 +63,15 @@ const toYouTubeEmbedUrl = (value?: string): string | null => {
       return null;
     }
 
-    return `https://www.youtube.com/embed/${videoId}`;
+    const embedUrl = new URL(`https://www.youtube.com/embed/${videoId}`);
+    embedUrl.searchParams.set("rel", "0");
+    const start = parsed.searchParams.get("t") ?? parsed.searchParams.get("start");
+
+    if (start && /^\d+$/.test(start)) {
+      embedUrl.searchParams.set("start", start);
+    }
+
+    return embedUrl.toString();
   } catch {
     return null;
   }
@@ -86,7 +99,7 @@ const youtubeEmbedUrl = toYouTubeEmbedUrl(entry.data.youtubeUrl ?? entry.data.ur
             <p class="tip-detail-meta">
               <span class="tip-detail-meta-mark" aria-hidden="true"></span>
               <span>
-                {entry.data.source} · {formatType(entry.data.type)}
+                {formatDateMetadata(entry.data.source)} · {formatType(entry.data.type)}
               </span>
             </p>
             <p class="resource-detail-summary">{entry.data.summary}</p>
@@ -94,7 +107,7 @@ const youtubeEmbedUrl = toYouTubeEmbedUrl(entry.data.youtubeUrl ?? entry.data.ur
               <figure class="tip-detail-video">
                 <div class="tip-detail-video-frame">
                   <iframe
-                    src={`${youtubeEmbedUrl}?rel=0`}
+                    src={youtubeEmbedUrl}
                     title={`Video for ${entry.data.title}`}
                     loading="lazy"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "@layouts/BaseLayout.astro";
+import { formatDateMetadata } from "@utils/date";
 
 const examples = (await getCollection("resources"))
   .filter((entry) => entry.data.homeCategory === "examples")
@@ -144,7 +145,7 @@ const featuredResources = pickRandom(resources, 5);
                         <a href={entry.data.url} target="_blank" rel="noreferrer">{formatGuideHost(entry.data.url)}</a>
                       </td>
                       <td>{formatOrganizationType(entry.data.byline)}</td>
-                      <td>{formatTableValue(entry.data.source)}</td>
+                      <td>{formatDateMetadata(formatTableValue(entry.data.source))}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -165,7 +166,7 @@ const featuredResources = pickRandom(resources, 5);
                     <em>organization type</em> {formatOrganizationType(entry.data.byline)}
                   </p>
                   <p class="tips-mobile-meta">
-                    <em>last updated</em> {formatTableValue(entry.data.source)}
+                    <em>last updated</em> {formatDateMetadata(formatTableValue(entry.data.source))}
                   </p>
                 </article>
               ))}
